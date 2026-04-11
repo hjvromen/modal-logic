@@ -126,3 +126,29 @@ section Decidability
 #print axioms Modal.bForces_iff_forces
 
 end Decidability
+
+section DecidabilityMore
+
+#print axioms Modal.filtration_preserves_reflexivity
+#print axioms Modal.filtration_preserves_seriality
+#print axioms Modal.filtration_preserves_symmetry
+#print axioms Modal.fmp_T
+#print axioms Modal.fmp_KD
+#print axioms Modal.fmp_KB
+#print axioms Modal.fmp_S5
+#print axioms Modal.forces_subtype
+#print axioms Modal.filtrationFrame_card_le
+#print axioms Modal.finite_model_to_fin_ref
+#print axioms Modal.finite_model_to_fin_serial
+#print axioms Modal.finite_model_to_fin_symm
+#print axioms Modal.finite_model_to_fin_equiv
+#print axioms Modal.tValid_iff_no_bounded_countermodel
+#print axioms Modal.kdValid_iff_no_bounded_countermodel
+#print axioms Modal.kbValid_iff_no_bounded_countermodel
+#print axioms Modal.s5Valid_iff_no_bounded_countermodel
+#print axioms Modal.decidable_tValid
+#print axioms Modal.decidable_kdValid
+#print axioms Modal.decidable_kbValid
+#print axioms Modal.decidable_s5Valid
+
+end DecidabilityMore

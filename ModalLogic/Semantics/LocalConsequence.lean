@@ -71,14 +71,17 @@ def localSemCsq (Γ : Ctx) (φ : Form) : Prop :=
 in general (see `local_global_gap`). -/
 theorem localSemCsq_implies_globalSemCsq {Γ : Ctx} {φ : Form}
     (h : localSemCsq Γ φ) : globalSemCsq Γ φ := by
-  exact fun F v hv x => h F v x fun ψ hψ => hv ψ x hψ
+  intro F v hv x
+  exact h F v x fun ψ hψ => hv ψ x hψ
 
 /-- For the empty context, global and local consequence coincide (both reduce
 to universal validity). -/
 theorem localSemCsq_empty_iff_globalSemCsq_empty {φ : Form} :
     localSemCsq ∅ φ ↔ globalSemCsq ∅ φ := by
-  unfold localSemCsq globalSemCsq;
-  unfold forcesCtx; aesop;
+  constructor
+  · exact localSemCsq_implies_globalSemCsq
+  · intro h F v w _
+    exact h F v (fun _ _ hm => (hm.elim)) w
 
 /-!
 ## § 3. The Gap: Counterexample Separating Local from Global Consequence
@@ -94,16 +97,17 @@ for global consequence but would NOT be sound for local consequence.
 /-- `{var 0} ⊨_global □(var 0)`: under global consequence, if `var 0` holds at
 every world, then `□(var 0)` holds everywhere. -/
 theorem global_nec_example : globalSemCsq {Form.var 0} (Form.box (Form.var 0)) := by
-  intro F v hv x; specialize hv ( p[0] ) ; aesop;
+  intro F v hv x y hxy
+  exact hv (Form.var 0) y (Set.mem_singleton _)
 
 /-- `{var 0} ⊭_local □(var 0)`: countermodel is a two-world frame where
 `var 0` holds at world 0 but not at accessible world 1. -/
 theorem local_nec_counterexample : ¬ localSemCsq {Form.var 0} (Form.box (Form.var 0)) := by
-  unfold localSemCsq;
-  push_neg;
-  -- Consider a two-world frame with states {0, 1} and relation R where 0 R 1.
-  use ⟨Bool, fun x y => x = false ∧ y = true⟩;
-  use fun n x => if n = 0 ∧ x = false then true else false; simp +decide [ forces ] ;
+  unfold localSemCsq
+  push_neg
+  use ⟨Bool, fun x y => x = false ∧ y = true⟩
+  use fun n x => if n = 0 ∧ x = false then true else false
+  simp +decide [forces]
 
 /--
 **The gap theorem**: Global and local consequence do NOT coincide in general.
@@ -150,9 +154,16 @@ without necessitation is a local semantic consequence. By induction on the
 derivation—each axiom is locally valid, and modus ponens preserves local validity. -/
 theorem local_soundness {Γ : Ctx} {φ : Form}
     (h : ProofK_noNec Γ φ) : localSemCsq Γ φ := by
-  -- We proceed by induction on the structure of the proof `h`.
-  induction' h with Γ φ ψ hpq hp hpq hp h_ind;
-  all_goals unfold localSemCsq; aesop;
+  induction h with
+  | hyp hmem => intro F v w hΓ; exact hΓ _ hmem
+  | pl1 => intro F v w _; intro h1 h2; exact h1
+  | pl2 => intro F v w _; intro h1 h2 h3; exact h1 h3 (h2 h3)
+  | pl3 => intro F v w _; intro h1 h2; by_contra h3; exact h1 h3 h2
+  | pl4 => intro F v w _; intro h1 h2; exact ⟨h1, h2⟩
+  | pl5 => intro F v w _; intro ⟨h1, _⟩; exact h1
+  | pl6 => intro F v w _; intro ⟨_, h2⟩; exact h2
+  | kdist => intro F v w _; intro hImpl hBox y hwy; exact hImpl y hwy (hBox y hwy)
+  | mp _ _ ih1 ih2 => intro F v w hΓ; exact ih1 F v w hΓ (ih2 F v w hΓ)
 
 /--
 **Global soundness implies derivability in the full system still gives global consequence**:

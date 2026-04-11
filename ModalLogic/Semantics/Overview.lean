@@ -23,6 +23,7 @@ import ModalLogic.Semantics.Paths
 import ModalLogic.Semantics.LocalConsequence
 import ModalLogic.Semantics.FiniteModelProperty
 import ModalLogic.Semantics.Decidability
+import ModalLogic.Semantics.DecidabilityMore
 
 /-!
 # Kripke Semantics for Modal Logic

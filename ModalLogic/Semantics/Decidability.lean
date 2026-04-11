@@ -251,8 +251,8 @@ theorem bForces_iff_forces (n : Nat) (rel : Fin n → Fin n → Bool)
         (fun k w => v k w = true) w φ := by
           -- We'll use induction on the structure of the formula φ.
           induction' φ with p q hp hq generalizing w;
-          · aesop;
-          · aesop;
+          · simp [bForces, forces];
+          · simp [bForces, forces];
           · unfold bForces forces; aesop;
           · simp_all +decide [ forces, bForces ];
             grind +ring;

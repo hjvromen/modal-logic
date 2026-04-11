@@ -5,7 +5,7 @@ Converted to Lean 4 with improvements
 -/
 
 
-import ModalLogic.Semantics.Correspondence
+import ModalLogic.Semantics.Definability
 
 namespace Modal
 open Modal
@@ -188,10 +188,14 @@ lemma soundnessHelper {Γ : Ctx} {φ : Form} {C : Set Frame.{0}} :
   | pl6 =>
       intros x h
       exact h.2
-  | kdist => aesop
+  | kdist =>
       -- K axiom is valid in any frame
-  | nec _ ih => aesop
+      intro x hBoxImpl hBoxφ y hxy
+      exact hBoxImpl y hxy (hBoxφ y hxy)
+  | nec _ ih =>
       -- Necessitation preserves validity in frame class C
+      intro x y _
+      exact ih y
   | mp _ _ ih_hpq ih_hp =>
       -- Modus ponens preserves validity
       intro x

@@ -1,15 +1,24 @@
+This project was edited by [Aristotle](https://aristotle.harmonic.fun).
+
+To cite Aristotle:
+- Tag @Aristotle-Harmonic on GitHub PRs/issues
+- Add as co-author to commits:
+```
+Co-authored-by: Aristotle (Harmonic) <aristotle-harmonic@harmonic.fun>
+```
+
 # Modal Logic in Lean 4
 
 A comprehensive formalization of normal modal propositional logic in [Lean 4](https://lean-lang.org/) with [Mathlib](https://leanprover-community.github.io/mathlib4_docs/), featuring **soundness and completeness proofs for all 16 normal modal logics** in the modal cube, the **finite model property**, and **decidability**.
 
-**~11,100 lines of Lean · 0 sorry's · Only standard axioms (propext, Classical.choice, Quot.sound)**
+**~10,500 lines of Lean · 0 sorry's · Only standard axioms (propext, Classical.choice, Quot.sound)**
 
 ## Highlights
 
 - **Soundness and completeness** for all **16 distinct** normal modal logics obtainable from subsets of {T, B, 4, D, 5}:
   K, KT, KB, K4, K5, KD, KTB, S4, KB4, KDB, KD4, KD5, K45, KB5, KD45, S5
-- **Finite model property** via filtration for K
-- **Decidability** of K-validity (`DecidablePred kValid`)
+- **Finite model property** via filtration for K, T, KD, KB, and S5
+- **Decidability** of K, T, KD, KB, and S5-validity (`DecidablePred`)
 - **Frame correspondence**: T ↔ Reflexive, B ↔ Symmetric, 4 ↔ Transitive, 5 ↔ Euclidean, D ↔ Serial
 - **Undefinability** of irreflexivity
 - **Local vs. global consequence** with concrete counterexamples
@@ -57,8 +66,9 @@ ModalLogic/
 │   ├── Definability.lean       — Definable frame properties
 │   ├── Undefinability.lean     — Undefinability of irreflexivity
 │   ├── Paths.lean              — Reachability and path theory
-│   ├── FiniteModelProperty.lean — FMP via filtration
+│   ├── FiniteModelProperty.lean — FMP via filtration (K)
 │   ├── Decidability.lean       — Decidability of K-validity
+│   ├── DecidabilityMore.lean   — FMP + decidability for T, KD, KB, S5
 │   └── LocalConsequence.lean   — Local vs. global consequence
 ├── Metatheory/
 │   ├── Maximal.lean            — Maximal consistent sets, Lindenbaum's lemma
@@ -129,7 +139,7 @@ property and decidability.
 
 | Project | Prover | Logics | Completeness | FMP | Decidability |
 |---------|--------|--------|--------------|-----|--------------|
-| **This project** | Lean 4 / Mathlib | All 16 | ✓ (all 16) | ✓ (K) | ✓ (K) |
+| **This project** | Lean 4 / Mathlib | All 16 | ✓ (all 16) | ✓ (K, T, KD, KB, S5) | ✓ (K, T, KD, KB, S5) |
 | Bentzen (2021) | Lean 4 | K, S5 | ✓ (K, S5) | ✗ | ✗ |
 | From (2021) | Isabelle | K, KT, S4, S5 | ✓ (4 logics) | ✗ | ✗ |
 | Doczkal & Smolka (2016) | Coq | K, K* (PDL) | ✓ | ✓ (K*) | ✓ (K*) |

@@ -38,13 +38,9 @@ def canonicalFrame (AX : Ctx) : Frame where
 def canonicalVal : ℕ → World AX → Prop :=
   fun n w => World.mem (Form.var n) w
 
-/--
-**Canonical Model**: Combines the canonical frame with the canonical valuation.
--/
-def canonicalModel (AX : Ctx) : Model := {
-  f := canonicalFrame AX
-  v := canonicalVal
-}
+/- Note: A `canonicalModel` definition combining Frame + Valuation was removed
+   because the `Model` structure is unused in this development. The canonical
+   frame and valuation are used directly. -/
 
 ------------------------------------------------------------------------------
 -- § 2. Truth Lemma

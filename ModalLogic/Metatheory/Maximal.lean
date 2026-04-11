@@ -1,4 +1,5 @@
 import ModalLogic.Semantics.Soundness
+import ModalLogic.Syntax.SyntaxLemmas
 import Mathlib.Order.Zorn
 
 /-!
