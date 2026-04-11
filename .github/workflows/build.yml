@@ -24,6 +24,9 @@ jobs:
           key: lake-${{ hashFiles('lean-toolchain', 'lake-manifest.json') }}
           restore-keys: lake-
 
+      - name: Update dependencies
+        run: lake update
+
       - name: Get Mathlib cache
         run: lake exe cache get
 
