@@ -1,5 +1,5 @@
 name = "ModalLogic"
-defaultTargets = ["ModalLogic", "Axioms", "Examples"]
+defaultTargets = ["ModalLogic"]
 
 [[require]]
 name = "mathlib"
@@ -8,12 +8,4 @@ rev = "v4.28.0"
 
 [[lean_lib]]
 name = "ModalLogic"
-globs = ["ModalLogic", "ModalLogic.Syntax.+", "ModalLogic.Semantics.+", "ModalLogic.Metatheory.+", "ModalLogic.Cube"]
-
-[[lean_lib]]
-name = "Axioms"
-globs = ["Axioms"]
-
-[[lean_lib]]
-name = "Examples"
-globs = ["Examples"]
+globs = ["ModalLogic", "ModalLogic.+"]

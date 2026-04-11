@@ -1,2 +1,6 @@
-/docs
+# Lean build artifacts and other directories
+/.lake/
+/build/
+/lake-packages/
 /archief
+/docs
