@@ -1,12 +1,3 @@
-This project was edited by [Aristotle](https://aristotle.harmonic.fun).
-
-To cite Aristotle:
-- Tag @Aristotle-Harmonic on GitHub PRs/issues
-- Add as co-author to commits:
-```
-Co-authored-by: Aristotle (Harmonic) <aristotle-harmonic@harmonic.fun>
-```
-
 # Modal Logic in Lean 4
 
 A comprehensive formalization of normal modal propositional logic in [Lean 4](https://lean-lang.org/) with [Mathlib](https://leanprover-community.github.io/mathlib4_docs/), featuring **soundness and completeness proofs for all 16 normal modal logics** in the modal cube, the **finite model property**, and **decidability**.
