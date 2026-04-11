@@ -17,5 +17,15 @@ jobs:
           curl https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh -sSf | sh -s -- -y
           echo "$HOME/.elan/bin" >> $GITHUB_PATH
 
+      - name: Cache .lake
+        uses: actions/cache@v4
+        with:
+          path: .lake
+          key: lake-${{ hashFiles('lean-toolchain', 'lake-manifest.json') }}
+          restore-keys: lake-
+
+      - name: Get Mathlib cache
+        run: lake exe cache get
+
       - name: Build
         run: lake build
