@@ -4,75 +4,21 @@ Author: Huub Vromen
 
 # Kripke Semantics for Modal Logic
 
-This file defines the fundamental semantic notions for modal logic:
-- **Kripke frames**: structures with worlds and an accessibility relation
+This file defines the semantic notions for modal logic that build on Kripke frames:
 - **Forcing relation**: when a formula is true at a world in a model
 - **Validity**: when a formula is true in all models or frame classes
 - **Semantic consequence**: when a formula follows from assumptions in all models
+
+The core frame structure and frame properties are defined in
+`ModalLogic.Semantics.Frame`.
 
 ## References
 
 - Blackburn, de Rijke, Venema. *Modal Logic*. Cambridge University Press, 2001.
 -/
 
+import ModalLogic.Semantics.Frame
 import ModalLogic.Syntax.ProofSystem
-
-universe u
-
-/-- A single-agent Kripke frame. -/
-structure Modal.Frame where
-  states : Type u
-  rel : states → states → Prop
-
-namespace Modal.Frame
-
-variable {f : Modal.Frame.{u}}
-
-/-- Box modality: φ holds at all accessible worlds. -/
-def box (φ : f.states → Prop) (w : f.states) : Prop :=
-  ∀ v, f.rel w v → φ v
-
-/-- Diamond modality: φ holds at some accessible world. -/
-def diamond (φ : f.states → Prop) (w : f.states) : Prop :=
-  ∃ v, f.rel w v ∧ φ v
-
-/-- Implication of predicates. -/
-def impl (φ ψ : f.states → Prop) (w : f.states) : Prop :=
-  φ w → ψ w
-
-/-- Conjunction of predicates. -/
-def conj (φ ψ : f.states → Prop) (w : f.states) : Prop :=
-  φ w ∧ ψ w
-
-/-- Negation of a predicate. -/
-def neg (φ : f.states → Prop) (w : f.states) : Prop :=
-  ¬ φ w
-
-/-- Validity: φ holds at every world. -/
-def valid (φ : f.states → Prop) : Prop :=
-  ∀ w, φ w
-
-end Modal.Frame
-
-/-- Reflexive frame property. -/
-def Modal.Frame.Reflexive (f : Modal.Frame) : Prop :=
-  ∀ w, f.rel w w
-
-/-- Symmetric frame property. -/
-def Modal.Frame.Symmetric (f : Modal.Frame) : Prop :=
-  ∀ w v, f.rel w v → f.rel v w
-
-/-- Transitive frame property. -/
-def Modal.Frame.Transitive (f : Modal.Frame) : Prop :=
-  ∀ w v u, f.rel w v → f.rel v u → f.rel w u
-
-/-- Euclidean frame property. -/
-def Modal.Frame.Euclidean (f : Modal.Frame) : Prop :=
-  ∀ w v u, f.rel w v → f.rel w u → f.rel v u
-
-/-- Serial frame property. -/
-def Modal.Frame.Serial (f : Modal.Frame) : Prop :=
-  ∀ w, ∃ v, f.rel w v
 
 namespace Modal
 
