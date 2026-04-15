@@ -2,53 +2,132 @@
 Copyright (c) 2025 Huub Vromen. All rights reserved.
 Author: Huub Vromen
 
-# Kripke Semantics
+# Kripke Semantics for Modal Logic
 
-This file defines the forcing relation and validity notions for modal logic.
+This file defines the fundamental semantic notions for modal logic:
+- **Kripke frames**: structures with worlds and an accessibility relation
+- **Forcing relation**: when a formula is true at a world in a model
+- **Validity**: when a formula is true in all models or frame classes
+- **Semantic consequence**: when a formula follows from assumptions in all models
+
+## References
+
+- Blackburn, de Rijke, Venema. *Modal Logic*. Cambridge University Press, 2001.
 -/
 
 import ModalLogic.Syntax.ProofSystem
-import ModalLogic.Semantics.Correspondence
+
+universe u
+
+/-- A single-agent Kripke frame. -/
+structure Modal.Frame where
+  states : Type u
+  rel : states → states → Prop
+
+namespace Modal.Frame
+
+variable {f : Modal.Frame.{u}}
+
+/-- Box modality: φ holds at all accessible worlds. -/
+def box (φ : f.states → Prop) (w : f.states) : Prop :=
+  ∀ v, f.rel w v → φ v
+
+/-- Diamond modality: φ holds at some accessible world. -/
+def diamond (φ : f.states → Prop) (w : f.states) : Prop :=
+  ∃ v, f.rel w v ∧ φ v
+
+/-- Implication of predicates. -/
+def impl (φ ψ : f.states → Prop) (w : f.states) : Prop :=
+  φ w → ψ w
+
+/-- Conjunction of predicates. -/
+def conj (φ ψ : f.states → Prop) (w : f.states) : Prop :=
+  φ w ∧ ψ w
+
+/-- Negation of a predicate. -/
+def neg (φ : f.states → Prop) (w : f.states) : Prop :=
+  ¬ φ w
+
+/-- Validity: φ holds at every world. -/
+def valid (φ : f.states → Prop) : Prop :=
+  ∀ w, φ w
+
+end Modal.Frame
+
+/-- Reflexive frame property. -/
+def Modal.Frame.Reflexive (f : Modal.Frame) : Prop :=
+  ∀ w, f.rel w w
+
+/-- Symmetric frame property. -/
+def Modal.Frame.Symmetric (f : Modal.Frame) : Prop :=
+  ∀ w v, f.rel w v → f.rel v w
+
+/-- Transitive frame property. -/
+def Modal.Frame.Transitive (f : Modal.Frame) : Prop :=
+  ∀ w v u, f.rel w v → f.rel v u → f.rel w u
+
+/-- Euclidean frame property. -/
+def Modal.Frame.Euclidean (f : Modal.Frame) : Prop :=
+  ∀ w v u, f.rel w v → f.rel w u → f.rel v u
+
+/-- Serial frame property. -/
+def Modal.Frame.Serial (f : Modal.Frame) : Prop :=
+  ∀ w, ∃ v, f.rel w v
 
 namespace Modal
+
 open BasicModal
 
 /-!
-## § 1. Forcing Relation
+## Forcing Relation
+
+The forcing relation `forces f v w φ` defines when formula φ is true at world w
+in frame f under valuation v.
 -/
 
-/-- **Forcing relation**: `forces F V w φ` means formula φ is true at world w
-in model (F, V). Defined by structural recursion on φ. -/
-def forces (F : Frame.{0}) (V : Nat → F.states → Prop) :
-    F.states → Form → Prop
-  | _, .bot      => False
-  | w, .var n    => V n w
-  | w, .and φ ψ  => forces F V w φ ∧ forces F V w ψ
-  | w, .impl φ ψ => forces F V w φ → forces F V w ψ
-  | w, .box φ    => ∀ v, F.rel w v → forces F V v φ
-
-@[simp] lemma forces_and {F : Frame.{0}} {V : Nat → F.states → Prop} {w : F.states}
-    {φ ψ : Form} : forces F V w (φ ⋏ ψ) ↔ forces F V w φ ∧ forces F V w ψ := Iff.rfl
-
-@[simp] lemma forces_impl {F : Frame.{0}} {V : Nat → F.states → Prop} {w : F.states}
-    {φ ψ : Form} : forces F V w (φ ⊃ ψ) ↔ (forces F V w φ → forces F V w ψ) := Iff.rfl
+/-- Forcing relation for basic modal formulas. -/
+def forces (f : Frame.{0}) (v : Nat → f.states → Prop)
+    (w : f.states) : Form → Prop
+  | .bot => False
+  | .var n => v n w
+  | .and φ ψ => forces f v w φ ∧ forces f v w ψ
+  | .impl φ ψ => forces f v w φ → forces f v w ψ
+  | .box φ => ∀ u, f.rel w u → forces f v u φ
 
 /-!
-## § 2. Validity Notions
+## Forcing Simp Lemmas
 -/
 
-/-- **Frame validity**: φ is valid in frame f if it holds at every world under every valuation. -/
+@[simp] theorem forces_bot (f : Frame.{0}) (v : ℕ → f.states → Prop) (w : f.states) :
+    forces f v w .bot ↔ False := by rfl
+
+@[simp] theorem forces_var (f : Frame.{0}) (v : ℕ → f.states → Prop) (w : f.states) (n : ℕ) :
+    forces f v w (.var n) ↔ v n w := by rfl
+
+@[simp] theorem forces_and (f : Frame.{0}) (v : ℕ → f.states → Prop) (w : f.states) (φ ψ : Form) :
+    forces f v w (.and φ ψ) ↔ forces f v w φ ∧ forces f v w ψ := by rfl
+
+theorem forces_impl (f : Frame.{0}) (v : ℕ → f.states → Prop) (w : f.states) (φ ψ : Form) :
+    forces f v w (.impl φ ψ) = (forces f v w φ → forces f v w ψ) := by rfl
+
+@[simp] theorem forces_box (f : Frame.{0}) (v : ℕ → f.states → Prop) (w : f.states) (φ : Form) :
+    forces f v w (.box φ) ↔ ∀ u, f.rel w u → forces f v u φ := by rfl
+
+/-!
+## Validity Notions
+-/
+
+/-- **Frame validity**: φ is valid in frame f (true at all worlds under all valuations). -/
 def fValid (φ : Form) (f : Frame.{0}) : Prop :=
-  ∀ (v : Nat → f.states → Prop) (x : f.states), forces f v x φ
+  ∀ (v : ℕ → f.states → Prop) (w : f.states), forces f v w φ
 
-/-- **Frame class validity**: φ is valid in frame class C if it is valid in every frame in C. -/
+/-- **Frame class validity**: φ is valid in all frames of class C. -/
 def FValid (φ : Form) (C : Set Frame.{0}) : Prop :=
-  ∀ (F : Frame.{0}), F ∈ C → ∀ (v : Nat → F.states → Prop) (x : F.states), forces F v x φ
+  ∀ f ∈ C, fValid φ f
 
-/-- **Global semantic consequence**: φ is a global semantic consequence of AX
-if in every model where all axioms in AX hold everywhere, φ also holds everywhere. -/
+/-- **Global semantic consequence**: φ follows from AX in all frames. -/
 def globalSemCsq (AX : Ctx) (φ : Form) : Prop :=
-  ∀ (F : Frame.{0}) (v : Nat → F.states → Prop),
-    (∀ ψ, ∀ x : F.states, ψ ∈ AX → forces F v x ψ) → ∀ x : F.states, forces F v x φ
+  ∀ (F : Frame.{0}) (v : ℕ → F.states → Prop),
+    (∀ ψ, ∀ x, ψ ∈ AX → forces F v x ψ) → ∀ x, forces F v x φ
 
 end Modal

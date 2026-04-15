@@ -1,2 +1,1 @@
-import ModalLogic.Semantics.Correspondence
-import ModalLogic.Semantics.Semantics
+import ModalLogic.Semantics

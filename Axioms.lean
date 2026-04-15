@@ -11,6 +11,9 @@ No unexpected axioms (such as `sorry`) should appear.
 
 import ModalLogic.Metatheory.Overview
 import ModalLogic.Semantics.Overview
+import ModalLogic.Semantics.FMPDecidabilityAll
+import ModalLogic.Semantics.FMPEuclidean
+import ModalLogic.Semantics.FMPCluster
 import ModalLogic.Cube
 
 /-!
@@ -152,3 +155,61 @@ section DecidabilityMore
 #print axioms Modal.decidable_s5Valid
 
 end DecidabilityMore
+
+section FMPDecidabilityAll
+
+#print axioms Modal.transFiltration_lemma
+#print axioms Modal.transFiltration_transitive
+#print axioms Modal.transFiltration_reflexive
+#print axioms Modal.transFiltration_serial
+#print axioms Modal.transFiltration_symmetric
+#print axioms Modal.fmp_K4
+#print axioms Modal.fmp_S4
+#print axioms Modal.fmp_KD4
+#print axioms Modal.fmp_KTB
+#print axioms Modal.fmp_KDB
+#print axioms Modal.fmp_KB4
+#print axioms Modal.fmp_KB5
+#print axioms Modal.k4Valid_iff_no_bounded_countermodel
+#print axioms Modal.s4Valid_iff_no_bounded_countermodel
+#print axioms Modal.kd4Valid_iff_no_bounded_countermodel
+#print axioms Modal.ktbValid_iff_no_bounded_countermodel
+#print axioms Modal.kdbValid_iff_no_bounded_countermodel
+#print axioms Modal.kb4Valid_iff_no_bounded_countermodel
+#print axioms Modal.kb5Valid_iff_no_bounded_countermodel
+#print axioms Modal.decidable_k4Valid
+#print axioms Modal.decidable_s4Valid
+#print axioms Modal.decidable_kd4Valid
+#print axioms Modal.decidable_ktbValid
+#print axioms Modal.decidable_kdbValid
+#print axioms Modal.decidable_kb4Valid
+#print axioms Modal.decidable_kb5Valid
+
+end FMPDecidabilityAll
+
+section FMPEuclidean
+
+#print axioms Modal.euclid_cluster'
+#print axioms Modal.euclid_cluster_closed'
+#print axioms Modal.euclidSubframe_filtration_euclidean
+#print axioms Modal.fmp_K5
+#print axioms Modal.fmp_KD5
+#print axioms Modal.k5Valid_iff_no_bounded_countermodel
+#print axioms Modal.kd5Valid_iff_no_bounded_countermodel
+#print axioms Modal.decidable_k5Valid
+#print axioms Modal.decidable_kd5Valid
+
+end FMPEuclidean
+
+section FMPCluster
+
+#print axioms Modal.transEuclid_P_sees_cluster
+#print axioms Modal.euclidSubframe_filtration_transitive
+#print axioms Modal.fmp_K45
+#print axioms Modal.fmp_KD45
+#print axioms Modal.k45Valid_iff_no_bounded_countermodel
+#print axioms Modal.kd45Valid_iff_no_bounded_countermodel
+#print axioms Modal.decidable_k45Valid
+#print axioms Modal.decidable_kd45Valid
+
+end FMPCluster

@@ -172,8 +172,8 @@ lemma soundnessHelper {Γ : Ctx} {φ : Form} {C : Set Frame.{0}} :
       -- Axiom case: use the assumption that all axioms are valid in C
       intro x
       exact hΓ _ hψ F hF v x
-  | pl1 => aesop
-  | pl2 => aesop
+  | pl1 => intro x hφ _; exact hφ
+  | pl2 => intro x h1 h2 h3; exact h1 h3 (h2 h3)
   | pl3 =>
       intros x hNotφImplNotψ hψ
       by_contra hNotφ

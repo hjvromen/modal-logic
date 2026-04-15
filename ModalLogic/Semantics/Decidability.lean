@@ -60,7 +60,11 @@ def kValid (φ : Form) : Prop :=
 /-- K-validity is equivalent to the unsatisfiability of the negation. -/
 theorem kValid_iff_not_satisfiable_neg (φ : Form) :
     kValid φ ↔ ¬ satisfiable (∼φ) := by
-      unfold kValid satisfiable; aesop;
+      unfold kValid satisfiable
+      simp only [Modal.forces, neg_def, not_exists]
+      constructor
+      · intro h F v w hw; exact hw (h F v w)
+      · intro h F v w; by_contra hc; exact h F v w hc
 
 /-- Finite satisfiability implies satisfiability (every finite model is a model). -/
 lemma finSatisfiable_implies_satisfiable (φ : Form) :
@@ -93,8 +97,20 @@ theorem forces_eq_of_vars_eq {F : Frame} {v₁ v₂ : Nat → F.states → Prop}
         induction' φ with n ih generalizing w;
         · bound;
         · exact h n ( by simp +decide [ vars ] ) w;
-        · simp_all +decide [ forces_and, vars ];
-        · unfold vars at h; aesop;
+        · rename_i φ₁ φ₂ ih₁ ih₂
+          simp only [forces_and]
+          constructor
+          · intro ⟨h1, h2⟩
+            exact ⟨(ih₁ w (fun n hn x => h n (Finset.mem_union_left _ hn) x)).mp h1,
+                   (ih₂ w (fun n hn x => h n (Finset.mem_union_right _ hn) x)).mp h2⟩
+          · intro ⟨h1, h2⟩
+            exact ⟨(ih₁ w (fun n hn x => h n (Finset.mem_union_left _ hn) x)).mpr h1,
+                   (ih₂ w (fun n hn x => h n (Finset.mem_union_right _ hn) x)).mpr h2⟩
+        · rename_i φ₁ φ₂ ih₁ ih₂
+          simp only [forces_impl]
+          constructor
+          · intro hi hf; exact (ih₂ w (fun n hn x => h n (Finset.mem_union_right _ hn) x)).mp (hi ((ih₁ w (fun n hn x => h n (Finset.mem_union_left _ hn) x)).mpr hf))
+          · intro hi hf; exact (ih₂ w (fun n hn x => h n (Finset.mem_union_right _ hn) x)).mpr (hi ((ih₁ w (fun n hn x => h n (Finset.mem_union_left _ hn) x)).mp hf))
         · simp_all +decide [ vars, forces ];
       exact h_ind φ w h
 

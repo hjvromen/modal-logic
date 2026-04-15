@@ -24,6 +24,10 @@ import ModalLogic.Semantics.LocalConsequence
 import ModalLogic.Semantics.FiniteModelProperty
 import ModalLogic.Semantics.Decidability
 import ModalLogic.Semantics.DecidabilityMore
+import ModalLogic.Semantics.FMPDecidabilityAll
+import ModalLogic.Semantics.FMPEuclidean
+import ModalLogic.Semantics.FMPCluster
+import ModalLogic.Semantics.LargestFiltration
 
 /-!
 # Kripke Semantics for Modal Logic
