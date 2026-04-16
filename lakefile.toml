@@ -1,4 +1,5 @@
 name = "ModalLogic"
+defaultTargets = ["ModalLogic"]
 leanOptions = []
 
 [[require]]
