@@ -1,5 +1,5 @@
 name = "ModalLogic"
-defaultTargets = ["ModalLogic"]
+defaultTargets = ["ModalLogic", "Axioms", "Collapse", "Examples"]
 leanOptions = []
 
 [[require]]
@@ -10,3 +10,12 @@ rev = "v4.28.0"
 [[lean_lib]]
 name = "ModalLogic"
 globs = ["ModalLogic", "ModalLogic.+"]
+
+[[lean_lib]]
+name = "Axioms"
+
+[[lean_lib]]
+name = "Collapse"
+
+[[lean_lib]]
+name = "Examples"
