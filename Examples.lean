@@ -1,5 +1,7 @@
 /-
-Copyright (c) 2024. All rights reserved.
+Copyright (c) 2026 Huub Vromen. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Huub Vromen
 
 # Examples for Modal Logic K
 
@@ -54,24 +56,24 @@ def diamond_p : Form := dia myP
 ------------------------------------------------------------------------------
 
 /-- **Example 1**: The K axiom is provable -/
-example : ∅ ⊢K (Form.impl (Form.box (Form.impl myP myQ)) 
-                           (Form.impl (Form.box myP) (Form.box myQ))) := 
+example : ∅ ⊢K (Form.impl (Form.box (Form.impl myP myQ))
+                           (Form.impl (Form.box myP) (Form.box myQ))) :=
   ProofK.kdist
 
 /-- **Example 2**: Propositional axiom PL1 -/
-example : ∅ ⊢K (Form.impl myP (Form.impl myQ myP)) := 
+example : ∅ ⊢K (Form.impl myP (Form.impl myQ myP)) :=
   ProofK.pl1
 
 /-- **Example 3**: Conjunction introduction -/
-example : ∅ ⊢K (Form.impl myP (Form.impl myQ (Form.and myP myQ))) := 
+example : ∅ ⊢K (Form.impl myP (Form.impl myQ (Form.and myP myQ))) :=
   ProofK.pl4
 
 /-- **Example 4**: Conjunction elimination (left) -/
-example : ∅ ⊢K (Form.impl (Form.and myP myQ) myP) := 
+example : ∅ ⊢K (Form.impl (Form.and myP myQ) myP) :=
   ProofK.pl5
 
 /-- **Example 5**: Conjunction elimination (right) -/
-example : ∅ ⊢K (Form.impl (Form.and myP myQ) myQ) := 
+example : ∅ ⊢K (Form.impl (Form.and myP myQ) myQ) :=
   ProofK.pl6
 
 ------------------------------------------------------------------------------
@@ -87,12 +89,12 @@ example (h : ∅ ⊢K myP) : ∅ ⊢K (Form.box myP) :=
   ProofK.nec h
 
 /-- **Example 8**: Chaining necessitation and K axiom -/
-example (h1 : ∅ ⊢K (Form.impl myP myQ)) (h2 : ∅ ⊢K (Form.box myP)) : 
+example (h1 : ∅ ⊢K (Form.impl myP myQ)) (h2 : ∅ ⊢K (Form.box myP)) :
     ∅ ⊢K (Form.box myQ) := by
   -- Necessitate the implication
   have h3 : ∅ ⊢K (Form.box (Form.impl myP myQ)) := ProofK.nec h1
   -- Apply K axiom
-  have k : ∅ ⊢K (Form.impl (Form.box (Form.impl myP myQ)) 
+  have k : ∅ ⊢K (Form.impl (Form.box (Form.impl myP myQ))
                             (Form.impl (Form.box myP) (Form.box myQ))) := ProofK.kdist
   -- Get □p → □q
   have h4 : ∅ ⊢K (Form.impl (Form.box myP) (Form.box myQ)) := ProofK.mp k h3
@@ -134,9 +136,9 @@ example (h : myP ∈ ({myP} : Ctx)) : {myP} ⊢K myP :=
 
 /-- **Example 13**: Proving from assumptions -/
 example : {myP, Form.impl myP myQ} ⊢K myQ := by
-  have h1 : {myP, Form.impl myP myQ} ⊢K (Form.impl myP myQ) := 
+  have h1 : {myP, Form.impl myP myQ} ⊢K (Form.impl myP myQ) :=
     ProofK.hyp (by simp)
-  have h2 : {myP, Form.impl myP myQ} ⊢K myP := 
+  have h2 : {myP, Form.impl myP myQ} ⊢K myP :=
     ProofK.hyp (by simp)
   exact ProofK.mp h1 h2
 

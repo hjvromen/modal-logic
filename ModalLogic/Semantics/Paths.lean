@@ -1,7 +1,7 @@
 /-
-Copyright (c) 2025 Huub Vromen. All rights reserved.
-Author: Huub Vromen
-Converted to Lean 4 with improvements
+Copyright (c) 2026 Huub Vromen. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Huub Vromen
 -/
 
 import Mathlib.Data.List.Basic

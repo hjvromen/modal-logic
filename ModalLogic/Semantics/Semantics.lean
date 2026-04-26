@@ -1,6 +1,7 @@
 /-
-Copyright (c) 2025 Huub Vromen. All rights reserved.
-Author: Huub Vromen
+Copyright (c) 2026 Huub Vromen. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Huub Vromen
 
 # Kripke Semantics for Modal Logic
 
@@ -24,6 +25,8 @@ namespace Modal
 
 open BasicModal
 
+universe u
+
 /-!
 ## Forcing Relation
 
@@ -32,7 +35,7 @@ in frame f under valuation v.
 -/
 
 /-- Forcing relation for basic modal formulas. -/
-def forces (f : Frame.{0}) (v : Nat → f.states → Prop)
+def forces (f : Frame.{u}) (v : Nat → f.states → Prop)
     (w : f.states) : Form → Prop
   | .bot => False
   | .var n => v n w
@@ -44,19 +47,19 @@ def forces (f : Frame.{0}) (v : Nat → f.states → Prop)
 ## Forcing Simp Lemmas
 -/
 
-@[simp] theorem forces_bot (f : Frame.{0}) (v : ℕ → f.states → Prop) (w : f.states) :
+@[simp] theorem forces_bot (f : Frame.{u}) (v : ℕ → f.states → Prop) (w : f.states) :
     forces f v w .bot ↔ False := by rfl
 
-@[simp] theorem forces_var (f : Frame.{0}) (v : ℕ → f.states → Prop) (w : f.states) (n : ℕ) :
+@[simp] theorem forces_var (f : Frame.{u}) (v : ℕ → f.states → Prop) (w : f.states) (n : ℕ) :
     forces f v w (.var n) ↔ v n w := by rfl
 
-@[simp] theorem forces_and (f : Frame.{0}) (v : ℕ → f.states → Prop) (w : f.states) (φ ψ : Form) :
+@[simp] theorem forces_and (f : Frame.{u}) (v : ℕ → f.states → Prop) (w : f.states) (φ ψ : Form) :
     forces f v w (.and φ ψ) ↔ forces f v w φ ∧ forces f v w ψ := by rfl
 
-theorem forces_impl (f : Frame.{0}) (v : ℕ → f.states → Prop) (w : f.states) (φ ψ : Form) :
+theorem forces_impl (f : Frame.{u}) (v : ℕ → f.states → Prop) (w : f.states) (φ ψ : Form) :
     forces f v w (.impl φ ψ) = (forces f v w φ → forces f v w ψ) := by rfl
 
-@[simp] theorem forces_box (f : Frame.{0}) (v : ℕ → f.states → Prop) (w : f.states) (φ : Form) :
+@[simp] theorem forces_box (f : Frame.{u}) (v : ℕ → f.states → Prop) (w : f.states) (φ : Form) :
     forces f v w (.box φ) ↔ ∀ u, f.rel w u → forces f v u φ := by rfl
 
 /-!
@@ -64,16 +67,16 @@ theorem forces_impl (f : Frame.{0}) (v : ℕ → f.states → Prop) (w : f.state
 -/
 
 /-- **Frame validity**: φ is valid in frame f (true at all worlds under all valuations). -/
-def fValid (φ : Form) (f : Frame.{0}) : Prop :=
+def fValid (φ : Form) (f : Frame.{u}) : Prop :=
   ∀ (v : ℕ → f.states → Prop) (w : f.states), forces f v w φ
 
 /-- **Frame class validity**: φ is valid in all frames of class C. -/
-def FValid (φ : Form) (C : Set Frame.{0}) : Prop :=
+def FValid (φ : Form) (C : Set Frame.{u}) : Prop :=
   ∀ f ∈ C, fValid φ f
 
 /-- **Global semantic consequence**: φ follows from AX in all frames. -/
 def globalSemCsq (AX : Ctx) (φ : Form) : Prop :=
-  ∀ (F : Frame.{0}) (v : ℕ → F.states → Prop),
+  ∀ (F : Frame.{u}) (v : ℕ → F.states → Prop),
     (∀ ψ, ∀ x, ψ ∈ AX → forces F v x ψ) → ∀ x, forces F v x φ
 
 end Modal

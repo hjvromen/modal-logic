@@ -1,6 +1,8 @@
 /-
-Copyright (c) 2025 Huub Vromen. All rights reserved.
-Author: Huub Vromen
+Copyright (c) 2026 Huub Vromen. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Huub Vromen
+
 
 # Craig Interpolation for Modal Logic K
 
@@ -114,23 +116,23 @@ theorem product_preserves_left_zig {F₁ F₂ : Frame.{0}}
     forces (productFrame F₁ F₂ Z) (productVal F₁ F₂ Z v₁ v₂ S)
       ⟨(w₁, w₂), hw⟩ θ ↔ forces F₁ v₁ w₁ θ := by
   induction' θ with θ₁ θ₂ ih₁ ih₂ generalizing w₁ w₂ hw;
-  · exact?;
-  · simp +decide [ productVal, hθ ];
+  · exact Eq.to_iff rfl;
+  · simp +decide [ productVal ];
     exact fun h => False.elim <| h <| hθ <| by tauto;
   · unfold vars at hθ; simp_all +decide [ Finset.subset_iff ] ;
   · unfold vars at hθ; simp_all +decide [ Finset.subset_iff, forces ] ;
-  · constructor <;> intro h <;> simp_all +decide [ Set.subset_def, Finset.subset_iff ];
+  · constructor <;> intro h <;> simp_all +decide [ Finset.subset_iff ];
     · intro u hu
       obtain ⟨u₂, hu₂, huZ⟩ := hzig w₁ w₂ hw u hu
       have := h ⟨(u, u₂), huZ⟩ (by
       exact ⟨ hu, hu₂ ⟩)
       generalize_proofs at *;
       rename_i φ ih; specialize ih ( fun x hx => hθ <| by
-        exact? ) u u₂ huZ; aesop;
+        exact Finset.mem_def.mpr hx ) u u₂ huZ; aesop;
     · rintro ⟨ ⟨ u₁, u₂ ⟩, hu ⟩ hu';
       rename_i φ ih;
       convert ih ( fun x hx => hθ <| by
-        exact? ) u₁ u₂ hu |>.2 ( h u₁ hu'.1 ) using 1
+        exact Finset.mem_def.mpr hx ) u₁ u₂ hu |>.2 ( h u₁ hu'.1 ) using 1
 
 /-
 **Product preserves right formulas (with V-atoms)**:
@@ -150,17 +152,17 @@ theorem product_preserves_right_V {F₁ F₂ : Frame.{0}}
   induction' θ using Form.recOn with θ hθ generalizing w₁ w₂; aesop;
   · by_cases hθS : θ ∈ S <;> simp_all +decide [ productVal ];
     exact hatoms _ _ hw _ ( hθV _ ( by tauto ) hθS );
-  · simp_all +decide [ and_iff_left_iff_imp, vars ];
+  · simp_all +decide [ vars ];
   · rename_i φ ψ hφ hψ;
-    simp +decide [ forces, hφ, hψ ];
+    simp +decide [ forces ];
     rw [ hφ ( fun n hn hn' => hθV n ( by exact Finset.mem_union_left _ hn ) hn' ), hψ ( fun n hn hn' => hθV n ( by exact Finset.mem_union_right _ hn ) hn' ) ];
   · rename_i φ ih;
     constructor <;> intro h u hu;
     · obtain ⟨ u₁, hu₁, hu₂ ⟩ := hzag w₁ w₂ hw u hu;
       exact ih ( fun n hn hn' => hθV n ( by
-        exact? ) hn' ) u₁ u hu₂ |>.1 ( h ⟨ ( u₁, u ), hu₂ ⟩ ⟨ hu₁, hu ⟩ );
+        exact Finset.mem_def.mpr hn ) hn' ) u₁ u hu₂ |>.1 ( h ⟨ ( u₁, u ), hu₂ ⟩ ⟨ hu₁, hu ⟩ );
     · exact ih ( fun n hn hn' => hθV n ( by
-        exact? ) hn' ) _ _ u.2 |>.2 ( h _ hu.2 )
+        exact Finset.mem_def.mpr hn ) hn' ) _ _ u.2 |>.2 ( h _ hu.2 )
 
 /-!
 ## § 4. Auxiliary Lemmas for fin_conj
@@ -172,7 +174,7 @@ If all elements of L have vars ⊆ V, then vars (fin_conj L) ⊆ V.
 lemma vars_fin_conj_of_all (L : List Form) (V : Finset ℕ)
     (h : ∀ φ ∈ L, vars φ ⊆ V) : vars (fin_conj L) ⊆ V := by
   induction' L with φ L ih;
-  · exact?;
+  · exact Finset.inter_eq_left.mp rfl;
   · intro x hx; unfold vars at hx; aesop;
 
 /-
@@ -182,7 +184,7 @@ lemma fin_conj_mem_maximal {AX : Ctx} (w : World AX) (L : List Form)
     (h : ∀ φ ∈ L, World.mem φ w) : World.mem (fin_conj L) w := by
   apply World.proves;
   convert h using 1;
-  exact?
+  exact identity_simp
 
 /-
 If ⊢K (φ ⊃ χᵢ) for all i, then ⊢K (φ ⊃ fin_conj [χ₁,...,χₙ]).
@@ -198,15 +200,15 @@ lemma phi_implies_fin_conj {AX : Ctx} (φ : Form) (L : List Form)
       have h2 : AX ⊢K φ ⟹ fin_conj L := by
         assumption
       have h3 : AX ⊢K (χ ⊃ (fin_conj L ⊃ (χ & fin_conj L))) := by
-        exact?;
+        exact pl4;
       have h4 : AX ⊢K φ ⟹ (fin_conj L ⊃ (χ & fin_conj L)) := by
-        exact?;
+        exact impl_chain2 h1 h3;
       have h5 : AX ⊢K (φ ⊃ (fin_conj L ⊃ (χ & fin_conj L))) → AX ⊢K (φ ⊃ fin_conj L) → AX ⊢K (φ ⊃ (χ & fin_conj L)) := by
         intros h4 h5;
         have h6 : AX ⊢K (φ ⊃ (fin_conj L ⊃ (χ & fin_conj L))) → AX ⊢K (φ ⊃ fin_conj L) → AX ⊢K (φ ⊃ (χ & fin_conj L)) := by
           intros h4 h5
           have h6 : AX ⊢K ((φ ⊃ (fin_conj L ⊃ (χ & fin_conj L))) ⊃ ((φ ⊃ fin_conj L) ⊃ (φ ⊃ (χ & fin_conj L)))) := by
-            exact?
+            exact pl2
           grind +suggestions;
         exact h6 h4 h5;
       exact h5 h4 h2;
@@ -221,7 +223,7 @@ lemma conj_imp_neg_rearrange {AX : Ctx} {L' : List Form} {φ : Form}
     ProofK AX (φ ⊃ ∼(fin_conj L')) := by
   -- From h : ⊢K (fin_conj L' ⊃ (φ ⊃ ⊥ₘ)), by swapping the two antecedents using double_imp or imp_switch, we get ⊢K (φ ⊃ (fin_conj L' ⊃ ⊥ₘ)).
   have hswap : AX ⊢K (φ ⊃ (fin_conj L' ⊃ ⊥ₘ)) := by
-    exact?;
+    exact imp_switch h;
   convert hswap using 1
 
 /-!
@@ -251,16 +253,16 @@ lemma iterated_five_helper {AX : Ctx} (Gamma_keep Gamma_peel : Ctx)
   -- Let's choose any $l \in L$.
   induction' L with l L ih generalizing b <;> simp_all +decide [ fin_conj ];
   · use [], by simp, [], by simp;
-    exact?;
+    exact imp_if_imp_imp hprf;
   · -- By the and_right_imp lemma, we can split the implication into two parts.
     have h_split : AX ⊢K fin_conj L ⟹ (l ⊃ b) := by
-      exact?;
+      exact imp_conj_imp_imp.mp hprf;
     obtain ⟨ L_keep, hL_keep, L_peel, hL_peel, h ⟩ := ih _ h_split;
     cases' hL.1 with hl hl;
     · refine' ⟨ l :: L_keep, _, L_peel, _, _ ⟩ <;> simp_all +decide [ fin_conj ];
       have h_split : AX ⊢K fin_conj L_keep ⟹ (l ⊃ (fin_conj L_peel ⟹ b)) := by
-        exact?;
-      exact?;
+        exact imp_shift.mp h;
+      exact and_right_imp.mpr h_split;
     · use L_keep, hL_keep, l :: L_peel;
       simp_all +decide [ fin_conj_cons ];
       grind +suggestions
@@ -287,9 +289,9 @@ lemma canonical_zig_consistent (V : Finset ℕ)
       apply World.proves;
       any_goals exact L_keep.map fun x => □x;
       · grind;
-      · exact?;
+      · exact fin_conj_boxn;
     apply World.derives w₂ h_box_neg_fin_conj;
-    exact?;
+    exact box_mono hprf;
   -- By hZ (canonicalVAgree V w₁ w₂): □(∼(fin_conj L_peel)) ∈ w₁ (using the backward direction of the iff, since it's in w₂).
   have h_box_neg_fin_conj_w1 : World.mem (□ (∼ (fin_conj L_peel))) w₁ := by
     have h_vars_subset : vars (fin_conj L_peel) ⊆ V := by
@@ -315,7 +317,7 @@ theorem canonical_V_zig (V : Finset ℕ)
       (canonicalFrame ∅).rel w₂ w₂' ∧ canonicalVAgree V w₁' w₂' := by
   -- By canonical_zig_consistent, {χ | World.mem (Form.box χ) w₂} ∪ {χ | vars χ ⊆ V ∧ World.mem χ w₁'} is `AX`-consistent.
   have h_consistent : ax_consist ∅ ({χ | World.mem (Form.box χ) w₂} ∪ {χ | vars χ ⊆ V ∧ World.mem χ w₁'}) := by
-    exact?;
+    exact canonical_zig_consistent V w₁ w₂ hZ w₁' hR;
   obtain ⟨w₂', hw₂'⟩ : ∃ w₂' : World ∅,ax_consist ∅ w₂'.val ∧ ({χ | World.mem (Form.box χ) w₂} ∪ {χ | vars χ ⊆ V ∧ World.mem χ w₁'}) ⊆ w₂'.val := by
     obtain ⟨w₂', hw₂'⟩ : ∃ w₂' : World ∅,ax_consist ∅ w₂'.val ∧ ({χ | World.mem (Form.box χ) w₂} ∪ {χ | vars χ ⊆ V ∧ World.mem χ w₁'}) ⊆ w₂'.val := by
       have := lindenbaum ∅ ({χ | World.mem (Form.box χ) w₂} ∪ {χ | vars χ ⊆ V ∧ World.mem χ w₁'}) h_consistent
@@ -376,8 +378,8 @@ theorem syntactic_craig_interpolation (φ ψ : Form) (h : ∅ ⊢K (φ ⊃ ψ)) 
             apply vars_fin_conj_of_all;
             exact fun ψ hψ => hL'_subset ψ hψ |>.1;
           convert h_vars_fin_conj using 1;
-          exact?;
-        · exact?;
+          exact vars_neg (fin_conj L');
+        · exact conj_imp_neg_rearrange hL'_proof;
       -- But all elements of L' are in w₂, so fin_conj L' ∈ w₂ (fin_conj_mem_maximal).
       have h_fin_conj_L'_in_w2 : fin_conj L' ∈ w₂.val := by
         exact fin_conj_mem_maximal w₂ L' fun ψ hψ => hL'_subset ψ hψ |>.2;
@@ -414,7 +416,7 @@ theorem syntactic_craig_interpolation (φ ψ : Form) (h : ∅ ⊢K (φ ⊃ ψ)) 
     have h_product_forces_w2 : ¬forces (productFrame (canonicalFrame ∅) (canonicalFrame ∅) (fun w₁ w₂ => ∀ χ : Form, vars χ ⊆ V → (χ ∈ w₁.val ↔ χ ∈ w₂.val))) (productVal (canonicalFrame ∅) (canonicalFrame ∅) (fun w₁ w₂ => ∀ χ : Form, vars χ ⊆ V → (χ ∈ w₁.val ↔ χ ∈ w₂.val)) canonicalVal canonicalVal (vars φ)) ⟨(w₁, w₂), hw₁.2⟩ ψ := by
       rw [ product_preserves_right_V ];
       exact h_forces_w2;
-      exact?;
+      exact fun w₁ w₂ a n a_1 => h_bisimulation.atoms w₁ w₂ a n a_1;
       · exact fun w₁ w₂ h u₂ hu₂ => by obtain ⟨ u₁, hu₁, hu₁' ⟩ := h_bisimulation.zag w₁ w₂ h u₂ hu₂; exact ⟨ u₁, hu₁, hu₁' ⟩ ;
       · exact fun n hn₁ hn₂ => Finset.mem_inter.mpr ⟨ hn₂, hn₁ ⟩;
     apply h_product_forces_w2;
@@ -423,12 +425,12 @@ theorem syntactic_craig_interpolation (φ ψ : Form) (h : ∅ ⊢K (φ ⊃ ψ)) 
     · exact h_product_forces_w1;
   · -- Use five_helper to separate ∼ψ from L: get L' ⊆ {V-consequences of φ} with ⊢K (fin_conj L' ⊃ (∼ψ ⊃ ⊥ₘ)).
     obtain ⟨L', hL'⟩ : ∃ L' : List Form, (∀ ψ ∈ L', ψ ∈ {χ : Form | vars χ ⊆ V ∧ ProofK ∅ (φ ⊃ χ)}) ∧ ProofK ∅ (fin_conj L' ⊃ (∼ψ ⊃ ⊥ₘ)) := by
-      exact?;
+      exact five ∅ {χ | vars χ ⊆ V ∧ ∅ ⊢K φ ⟹ χ} (¬ₘψ) h_consistent;
     -- So ⊢K (fin_conj L' ⊃ ψ) (by cut with dne: ∼ψ ⊃ ⊥ₘ is ∼∼ψ, and dne gives ∼∼ψ ⊃ ψ, so fin_conj L' ⊃ ∼∼ψ by the proof, then cut with dne).
     have h_fin_conj_L'_implies_psi : ProofK ∅ (fin_conj L' ⊃ ψ) := by
       apply cut hL'.right;
       apply dne;
-    refine' h_contra ⟨ fin_conj L', _, _, _ ⟩ <;> simp_all +decide [ ProofK ];
+    refine' h_contra ⟨ fin_conj L', _, _, _ ⟩ <;> simp_all +decide ;
     · apply phi_implies_fin_conj;
       exact fun χ hχ => hL'.1 χ hχ |>.2;
     · exact vars_fin_conj_of_all L' V fun χ hχ => hL'.1 χ hχ |>.1
@@ -505,10 +507,10 @@ lemma forces_subst_var {f : Frame.{0}} {v : ℕ → f.states → Prop}
   convert forces_vars_agree _ _ _ using 1;
   rotate_left;
   exact fun n w => if n = p then v q w else v n w;
-  · intro n hn w; split_ifs <;> simp_all +decide [ subst ] ;
+  · intro n hn w; split_ifs <;> simp_all +decide ;
     contrapose! hn;
     induction' φ with φ ψ hφ hψ generalizing p q <;> simp_all +decide [ subst ];
-    · exact?;
+    · exact Finset.disjoint_singleton_left.mp fun ⦃x⦄ a a_1 => a_1;
     · split_ifs <;> simp_all +decide [ vars ];
       · grind;
       · tauto;
@@ -530,8 +532,16 @@ lemma uniform_subst_var {AX : Ctx} {ψ : Form} (n m : ℕ)
     intro ψ hψ
     induction' hψ with ψ ih;
     all_goals simp_all +decide [ subst ];
-    any_goals exact?;
-    apply ProofK.pl3;
+    all_goals first
+      | exact ProofK.pl1
+      | exact ProofK.pl2
+      | exact ProofK.pl3
+      | exact ProofK.pl4
+      | exact ProofK.pl5
+      | exact ProofK.pl6
+      | exact ProofK.kdist
+      | exact ProofK.mp ‹_› ‹_›
+      | exact ProofK.nec ‹_›
   exact h_ind ψ h
 
 /-
@@ -589,7 +599,7 @@ lemma subst_not_in_vars (φ : Form) (n : ℕ) (ψ : Form) (h : n ∉ vars φ) :
   · exact if_neg ( by aesop );
   · exact congr_arg₂ _ ( h₂ n ψ hn.1 ) ( ‹∀ ( n : ℕ ) ( ψ : Form ), n ∉ vars h₁ → subst h₁ n ψ = h₁› n ψ hn.2 );
   · unfold subst; aesop;
-  · exact?
+  · (expose_names; exact Eq.subst (congrArg Form.box (φ_ih n ψ hn)) rfl)
 
 /-
 Helper: combine two implications into a biconditional under a common antecedent.
@@ -608,8 +618,8 @@ lemma combine_impl_to_iff {AX : Ctx} {φ a b : Form}
       apply ProofK.pl2;
       exact a ⟹ b;
       · apply ProofK.mp;
-        exact?;
-        exact?;
+        exact pl1;
+        exact pl4;
       · assumption;
     · assumption;
   exact h3
@@ -626,35 +636,34 @@ theorem beth_definability (φ : Form) (p : ℕ) :
   -- By step 4, we have ⊢K ((φ & Form.var p) ⊃ (φ' ⊃ Form.var q)).
   have h_step4 : ProofK ∅ ((φ & Form.var p) ⊃ (subst φ p (Form.var q) ⊃ Form.var q)) := by
     apply completeness_K;
-    intro F v w;
-    intro hφp hφq;
+    intro F v w hφp hφq;
     have := h_implicit F v ( fun n => if n = p then v q else v n ) w; simp_all +decide [ forces_subst_var ] ;
   -- By step 5, we have ∃ θ with ⊢K ((φ & Form.var p) ⊃ θ), ⊢K (θ ⊃ (φ' ⊃ Form.var q)), and vars θ ⊆ vars (φ & Form.var p) ∩ vars (φ' ⊃ Form.var q).
   obtain ⟨θ, hθ1, hθ2, hθ3⟩ : ∃ θ : Form, (∅ ⊢K ((φ & Form.var p) ⊃ θ)) ∧ (∅ ⊢K (θ ⊃ (subst φ p (Form.var q) ⊃ Form.var q))) ∧ vars θ ⊆ vars (φ & Form.var p) ∩ vars (subst φ p (Form.var q) ⊃ Form.var q) := by
-    exact?;
+    exact craig_interpolation (φ ⋏ p[p]) (subst φ p p[q] ⟹ p[q]) h_step4;
   have hθ4 : p ∉ vars θ := by
     intro hp; specialize hθ3 hp; simp_all +decide [ vars ] ;
     have h_vars_subst : vars (subst φ p (Form.var q)) ⊆ (vars φ \ {p}) ∪ {q} := by
-      exact?;
+      exact vars_subst_var φ p q;
     grind
   have hθ5 : q ∉ vars θ := by
     intro hqθ; have := hθ3 hqθ; simp_all +decide [ vars ] ;
   have hθ6 : ∅ ⊢K (φ ⊃ (Form.var p ⊃ θ)) := by
     have hθ6 : ∅ ⊢K (Form.var p ⊃ (φ ⊃ θ)) := by
-      exact?;
-    exact?
+      exact and_right_imp.mp hθ1;
+    exact imp_switch hθ6
   have hθ7 : ∅ ⊢K (φ ⊃ (θ ⊃ Form.var p)) := by
     have hθ7 : ∅ ⊢K (subst θ q (Form.var p) ⊃ (subst (subst φ p (Form.var q)) q (Form.var p) ⊃ subst (Form.var q) q (Form.var p))) := by
       apply uniform_subst_var q p hθ2; simp +decide ;
     have hθ8 : subst θ q (Form.var p) = θ := by
-      exact?
+      exact subst_not_in_vars θ q p[p] hθ5
     have hθ9 : subst (subst φ p (Form.var q)) q (Form.var p) = φ := by
       apply subst_var_roundtrip; exact hq.left; exact hq.right.symm;
     have hθ10 : subst (Form.var q) q (Form.var p) = Form.var p := by
       exact if_pos rfl
     rw [hθ8, hθ9, hθ10] at hθ7
     exact (by
-    exact?)
+    exact imp_switch hθ7)
   use θ;
   exact ⟨ hθ4, combine_impl_to_iff hθ6 hθ7 ⟩
 

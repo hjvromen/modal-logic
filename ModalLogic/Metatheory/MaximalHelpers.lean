@@ -1,5 +1,11 @@
 import ModalLogic.Metatheory.Maximal
 
+/-
+Copyright (c) 2026 Huub Vromen. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Huub Vromen
+-/
+
 /-!
 # Simplified API for Maximal Consistent Sets
 

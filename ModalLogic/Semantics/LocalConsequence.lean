@@ -1,6 +1,7 @@
 /-
-Copyright (c) 2025 Huub Vromen. All rights reserved.
-Author: Huub Vromen
+Copyright (c) 2026 Huub Vromen. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Huub Vromen
 
 # Local Semantic Consequence
 
@@ -41,6 +42,8 @@ namespace Modal
 open Modal
 open BasicModal
 
+universe u
+
 /-!
 ## § 1. Local Semantic Consequence
 -/
@@ -61,7 +64,7 @@ implies `globalSemCsq Γ φ`, but not vice versa.
 as their primary semantic entailment relation.
 -/
 def localSemCsq (Γ : Ctx) (φ : Form) : Prop :=
-  ∀ (F : Frame.{0}) v w, (∀ ψ ∈ Γ, forces F v w ψ) → forces F v w φ
+  ∀ (F : Frame.{u}) v w, (∀ ψ ∈ Γ, forces F v w ψ) → forces F v w φ
 
 /-!
 ## § 2. Relationship Between Global and Local Consequence
@@ -70,14 +73,14 @@ def localSemCsq (Γ : Ctx) (φ : Form) : Prop :=
 /-- Local consequence implies global consequence. The converse does NOT hold
 in general (see `local_global_gap`). -/
 theorem localSemCsq_implies_globalSemCsq {Γ : Ctx} {φ : Form}
-    (h : localSemCsq Γ φ) : globalSemCsq Γ φ := by
+    (h : localSemCsq.{u} Γ φ) : globalSemCsq.{u} Γ φ := by
   intro F v hv x
   exact h F v x fun ψ hψ => hv ψ x hψ
 
 /-- For the empty context, global and local consequence coincide (both reduce
 to universal validity). -/
 theorem localSemCsq_empty_iff_globalSemCsq_empty {φ : Form} :
-    localSemCsq ∅ φ ↔ globalSemCsq ∅ φ := by
+    localSemCsq.{u} ∅ φ ↔ globalSemCsq.{u} ∅ φ := by
   constructor
   · exact localSemCsq_implies_globalSemCsq
   · intro h F v w _
@@ -96,13 +99,13 @@ for global consequence but would NOT be sound for local consequence.
 
 /-- `{var 0} ⊨_global □(var 0)`: under global consequence, if `var 0` holds at
 every world, then `□(var 0)` holds everywhere. -/
-theorem global_nec_example : globalSemCsq {Form.var 0} (Form.box (Form.var 0)) := by
+theorem global_nec_example : globalSemCsq.{0} {Form.var 0} (Form.box (Form.var 0)) := by
   intro F v hv x y hxy
   exact hv (Form.var 0) y (Set.mem_singleton _)
 
 /-- `{var 0} ⊭_local □(var 0)`: countermodel is a two-world frame where
 `var 0` holds at world 0 but not at accessible world 1. -/
-theorem local_nec_counterexample : ¬ localSemCsq {Form.var 0} (Form.box (Form.var 0)) := by
+theorem local_nec_counterexample : ¬ localSemCsq.{0} {Form.var 0} (Form.box (Form.var 0)) := by
   unfold localSemCsq
   push_neg
   use ⟨Bool, fun x y => x = false ∧ y = true⟩
@@ -118,7 +121,7 @@ our unrestricted necessitation rule is sound for global consequence but would
 not be sound for local consequence.
 -/
 theorem local_global_gap :
-    ∃ (Γ : Ctx) (φ : Form), globalSemCsq Γ φ ∧ ¬ localSemCsq Γ φ := by
+    ∃ (Γ : Ctx) (φ : Form), globalSemCsq.{0} Γ φ ∧ ¬ localSemCsq.{0} Γ φ := by
   exact ⟨{Form.var 0}, Form.box (Form.var 0), global_nec_example, local_nec_counterexample⟩
 
 /-!
@@ -153,16 +156,16 @@ inductive ProofK_noNec : Ctx → Form → Prop where
 without necessitation is a local semantic consequence. By induction on the
 derivation—each axiom is locally valid, and modus ponens preserves local validity. -/
 theorem local_soundness {Γ : Ctx} {φ : Form}
-    (h : ProofK_noNec Γ φ) : localSemCsq Γ φ := by
+    (h : ProofK_noNec Γ φ) : localSemCsq.{u} Γ φ := by
   induction h with
   | hyp hmem => intro F v w hΓ; exact hΓ _ hmem
-  | pl1 => intro F v w _; intro h1 h2; exact h1
-  | pl2 => intro F v w _; intro h1 h2 h3; exact h1 h3 (h2 h3)
-  | pl3 => intro F v w _; intro h1 h2; by_contra h3; exact h1 h3 h2
-  | pl4 => intro F v w _; intro h1 h2; exact ⟨h1, h2⟩
-  | pl5 => intro F v w _; intro ⟨h1, _⟩; exact h1
-  | pl6 => intro F v w _; intro ⟨_, h2⟩; exact h2
-  | kdist => intro F v w _; intro hImpl hBox y hwy; exact hImpl y hwy (hBox y hwy)
+  | pl1 => intro F v w _ h1 h2; exact h1
+  | pl2 => intro F v w _ h1 h2 h3; exact h1 h3 (h2 h3)
+  | pl3 => intro F v w _ h1 h2; by_contra h3; exact h1 h3 h2
+  | pl4 => intro F v w _ h1 h2; exact ⟨h1, h2⟩
+  | pl5 => intro F v w _ ⟨h1, _⟩; exact h1
+  | pl6 => intro F v w _ ⟨_, h2⟩; exact h2
+  | kdist => intro F v w _ hImpl hBox y hwy; exact hImpl y hwy (hBox y hwy)
   | mp _ _ ih1 ih2 => intro F v w hΓ; exact ih1 F v w hΓ (ih2 F v w hΓ)
 
 /--
@@ -171,7 +174,7 @@ This is just a restatement confirming that our existing `soundness` theorem
 is about global consequence.
 -/
 theorem global_soundness_restated {Γ : Ctx} {φ : Form}
-    (h : ProofK Γ φ) : globalSemCsq Γ φ :=
+    (h : ProofK Γ φ) : globalSemCsq.{0} Γ φ :=
   soundness Γ φ h
 
 end Modal

@@ -1,6 +1,7 @@
 /-
-Copyright (c) 2025 Huub Vromen. All rights reserved.
-Author: Huub Vromen
+Copyright (c) 2026 Huub Vromen. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Huub Vromen
 
 # Finite Model Property and Decidability for K5 and KD5
 
@@ -48,7 +49,6 @@ R(b', c'), giving [b] R_s [c]. So Euclidean is preserved.
 - Chellas, *Modal Logic: An Introduction*, Ch. 5
 -/
 
-import Mathlib
 import ModalLogic.Semantics.FMPDecidabilityAll
 import ModalLogic.Semantics.LargestFiltration
 

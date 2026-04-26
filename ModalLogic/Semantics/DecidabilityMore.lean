@@ -35,7 +35,6 @@ satisfiability following from finiteness of the search space.
 - `decidable_s5Valid`: `DecidablePred s5Valid`
 -/
 
-import Mathlib
 import ModalLogic.Semantics.Decidability
 
 namespace Modal

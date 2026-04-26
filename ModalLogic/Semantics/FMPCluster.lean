@@ -1,6 +1,7 @@
 /-
-Copyright (c) 2025 Huub Vromen. All rights reserved.
-Author: Huub Vromen
+Copyright (c) 2026 Huub Vromen. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Huub Vromen
 
 # Finite Model Property and Decidability for K45 and KD45
 
@@ -43,7 +44,6 @@ the witnesses b₁ and c₁ both lie in C₁, and R(a₁, c₁) follows from the
 - Chellas, *Modal Logic: An Introduction*, Ch. 5
 -/
 
-import Mathlib
 import ModalLogic.Semantics.FMPEuclidean
 
 namespace Modal

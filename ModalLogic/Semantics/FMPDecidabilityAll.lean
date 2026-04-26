@@ -1,6 +1,7 @@
 /-
-Copyright (c) 2025 Huub Vromen. All rights reserved.
-Author: Huub Vromen
+Copyright (c) 2026 Huub Vromen. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Huub Vromen
 
 # Finite Model Property and Decidability for More Modal Logics
 
@@ -49,7 +50,6 @@ the filtration result is also symmetric + Euclidean.
 - Chellas, *Modal Logic: An Introduction*, Ch. 5 (filtration and FMP)
 -/
 
-import Mathlib
 import ModalLogic.Semantics.DecidabilityMore
 
 namespace Modal
@@ -108,7 +108,7 @@ lemma forces_box_single_step (F : Frame) (v : Nat → F.states → Prop) (φ : F
       obtain ⟨x', y', hx', hy', hxy'⟩ : ∃ x' y' : F.states, subfmlEquiv F v φ (Quotient.out q₁) x' ∧ subfmlEquiv F v φ (Quotient.out q₂) y' ∧ F.rel x' y' := by
         convert hrel using 1;
         unfold filtrationFrame;
-        simp +decide [ Quotient.lift₂_mk ];
+        simp +decide ;
         rw [ ← Quotient.out_eq q₁, ← Quotient.out_eq q₂ ];
         erw [ Quotient.lift₂_mk ];
         simp +decide [ subfmlEquiv ];
@@ -118,7 +118,7 @@ lemma forces_box_single_step (F : Frame) (v : Nat → F.states → Prop) (φ : F
         exact h_forces_x' y' hxy'
       have h_forces_y'_box : forces F v y' (Form.box ψ) := by
         exact fun z hz => h_forces_x' _ ( hTrans hxy' hz );
-      exact ⟨ hy' ψ ( by exact? ) |>.2 h_forces_y', hy' ( Form.box ψ ) ( by exact? ) |>.2 h_forces_y'_box ⟩
+      exact ⟨ hy' ψ ( by exact box_subformula_imp_subformula hψ_box ) |>.2 h_forces_y', hy' ( Form.box ψ ) ( by exact Multiset.mem_coe.mp hψ_box ) |>.2 h_forces_y'_box ⟩
 
 /-
 In a transitive frame, box forces are preserved along TransGen chains of the
@@ -133,7 +133,7 @@ lemma forces_box_along_transGen (F : Frame) (v : Nat → F.states → Prop) (φ 
     (hbox : forces F v q₁.out (Form.box ψ)) :
     forces F v q₂.out ψ ∧ forces F v q₂.out (Form.box ψ) := by
       induction' hchain with q₁ q₂ hchain ih;
-      · exact?;
+      · (expose_names; exact forces_box_single_step F v φ hTrans ψ hψ_box q₁_1 q₁ q₂ hbox);
       · apply forces_box_single_step F v φ hTrans ψ hψ_box hchain ih ‹_› (by tauto)
 
 /-!
@@ -216,7 +216,7 @@ TransGen of a symmetric relation is symmetric.
 -/
 lemma transGen_preserves_symmetry {α : Type*} {R : α → α → Prop}
     (hSymm : Symmetric R) : Symmetric (Relation.TransGen R) := by
-      exact?
+      exact Relation.TransGen.symmetric hSymm
 
 /-!
 ## § 5. Frame Property Consequences
@@ -520,7 +520,7 @@ lemma finite_model_to_fin_trans {F : Frame} [Fintype F.states]
     (hTrans : Transitive F.rel) (h : forces F v w φ) :
     finNTransSatisfiable φ (Fintype.card F.states) := by
       refine' ⟨ fun i j => F.rel ( Fintype.equivFin F.states |>.symm i ) ( Fintype.equivFin F.states |>.symm j ), _, _ ⟩ <;> simp_all +decide [ Transitive ];
-      · exact?;
+      · exact fun ⦃x y z⦄ a a_1 => (hTrans a ∘ fun a => a_1) F;
       · refine' ⟨ fun k i => v k ( Fintype.equivFin F.states |>.symm i ), Fintype.equivFin F.states w, _ ⟩;
         convert forces_equiv _ _ _ _ _ using 1;
         any_goals tauto;

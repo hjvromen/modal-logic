@@ -23,6 +23,7 @@ A comprehensive formalization of normal modal propositional logic in [Lean 4](ht
 - **Undefinability** of irreflexivity
 - **Craig interpolation** for modal logic K (fully proved)
 - **Beth definability** theorem (fully proved)
+- **Universe-polymorphic semantics**: forcing (`forces`) and validity (`fValid`, `FValid`) work over frames in any universe
 - **Local vs. global consequence** with concrete counterexamples
 - **Full axiom audit** via `#print axioms` on every major theorem
 
@@ -55,6 +56,7 @@ While 2⁵ = 32 subsets are possible, key collapse results (e.g., T implies D; T
 ```
 ModalLogic/
 ├── Syntax/
+│   ├── Overview.lean           — Module overview: imports all syntax components
 │   ├── Formula.lean            — Formula type, complexity, substitution
 │   ├── Derived.lean            — Derived operators (¬, ∨, ◇, ↔) and notation
 │   ├── ProofSystem.lean        — Hilbert-style proof system K
@@ -62,7 +64,8 @@ ModalLogic/
 │   ├── SyntaxLemmas.lean       — Derived rule toolkit
 │   └── Experimental.lean       — Experimental: type-valued derivations, proof metrics (not imported)
 ├── Semantics/
-│   ├── Semantics.lean          — Frames, models, forcing, validity
+│   ├── Overview.lean           — Module overview: imports all semantics components
+│   ├── Semantics.lean          — Frames, models, forcing, validity (universe-polymorphic)
 │   ├── Soundness.lean          — Soundness theorem (all 16 logics)
 │   ├── Correspondence.lean     — Frame correspondence theory
 │   ├── Definability.lean       — Definable frame properties
@@ -77,6 +80,8 @@ ModalLogic/
 │   ├── LargestFiltration.lean  — Largest filtration infrastructure
 │   └── LocalConsequence.lean   — Local vs. global consequence
 ├── Metatheory/
+│   ├── Overview.lean           — Module overview: imports all metatheory components
+│   ├── CompletenessOverview.lean — Documentation: completeness proof strategy overview
 │   ├── Maximal.lean            — Maximal consistent sets, Lindenbaum's lemma
 │   ├── Canonical.lean          — Canonical model and truth lemma
 │   ├── CompletenessCube.lean    — Completeness for the classical cube
@@ -195,7 +200,8 @@ property and decidability.
 
 ## License
 
-Copyright © 2025 Huub Vromen. All rights reserved.
+Licensed under the Apache License, Version 2.0.
+See [LICENSE](LICENSE) for details.
 
 ## Author
 

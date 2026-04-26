@@ -1,6 +1,7 @@
 /-
-Copyright (c) 2025 Huub Vromen. All rights reserved.
-Author: Huub Vromen
+Copyright (c) 2026 Huub Vromen. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Huub Vromen
 
 # Finite Model Property for K
 
@@ -39,7 +40,6 @@ subformulas of φ. Since |Σ| ≤ complexity(φ), this gives an effective bound.
 - Hughes & Cresswell, *A New Introduction to Modal Logic*, Ch. 6
 -/
 
-import Mathlib
 import ModalLogic.Semantics.Soundness
 
 namespace Modal
@@ -122,7 +122,7 @@ Two worlds are subformula-equivalent iff they have the same truth type.
 
 We encode this as a function from the subformula list to Prop.
 -/
-noncomputable def truthType (F : Frame) (v : Nat → F.states → Prop) (φ : Form)
+noncomputable def truthType (F : Frame) (v : Nat → F.states → Prop)
     (x : F.states) : List Form → Prop :=
   fun subs => ∀ ψ ∈ subs, forces F v x ψ
 
@@ -185,7 +185,7 @@ lemma box_subformula_imp_subformula {φ ψ : Form} :
     induction' φ with φ ψ hψ φ ψ hψ hψ' φ hψ hψ' hψ'' ψ hψ hψ' hψ'' <;> simp_all +decide [ subformulas ];
     · grind +splitImp;
     · grind +qlia;
-    · cases hψ <;> simp_all +decide [ subformulas ];
+    · cases hψ <;> simp_all +decide;
       exact Or.inr ( mem_subformulas_self _ );
   exact h_pos φ ψ
 
@@ -264,7 +264,7 @@ theorem filtration_lemma (F : Frame) (v : Nat → F.states → Prop) (φ : Form)
       have h_forces_y : forces F v y h₁ := by
         exact hy' _ ( box_subformula_imp_subformula hψ ) |>.2 h_forces_y';
       exact hy ▸ h₂ y ( by
-        exact? ) |>.1 h_forces_y;
+        exact box_subformula_imp_subformula hψ ) |>.1 h_forces_y;
     · intro y hy; have := h; simp_all +decide [ forces ] ;
       contrapose! h;
       refine' ⟨ ⟦y⟧, _, _ ⟩ <;> simp_all +decide [ filtrationFrame ];
@@ -289,7 +289,7 @@ noncomputable instance filtration_finite (F : Frame) (v : Nat → F.states → P
     exact Set.toFinite _;
   refine' h_finite.of_injective _ _;
   exact fun q => ⟨ _, ⟨ q.out, rfl ⟩ ⟩;
-  intro q₁ q₂ h_eq; simp_all +decide [ funext_iff, Quotient.eq ] ;
+  intro q₁ q₂ h_eq; simp_all +decide [ funext_iff] ;
   rw [ ← Quotient.out_eq q₁, ← Quotient.out_eq q₂ ];
   exact Quotient.sound fun ψ hψ => by specialize h_eq ψ; aesop;
 
@@ -307,7 +307,7 @@ theorem finite_model_property (φ : Form) :
   intro h
   obtain ⟨F, v, w, hw⟩ := h;
   use filtrationFrame F v φ, by
-    exact?, filtrationVal F v φ, Quotient.mk (subfmlSetoid F v φ) w;
+    exact filtration_finite F v φ, filtrationVal F v φ, Quotient.mk (subfmlSetoid F v φ) w;
   generalize_proofs at *;
   convert filtration_lemma F v φ w φ ( mem_subformulas_self φ ) |>.1 hw using 1
 

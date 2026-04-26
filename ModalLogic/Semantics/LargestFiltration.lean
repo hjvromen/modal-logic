@@ -1,6 +1,7 @@
 /-
-Copyright (c) 2025 Huub Vromen. All rights reserved.
-Author: Huub Vromen
+Copyright (c) 2026 Huub Vromen. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Huub Vromen
 
 # Largest Filtration
 
@@ -30,7 +31,6 @@ Given a formula φ, a model (F, v), and the subformula set Σ = Sub(φ), the
 - Chellas, *Modal Logic: An Introduction*, Ch. 5
 -/
 
-import Mathlib
 import ModalLogic.Semantics.DecidabilityMore
 
 namespace Modal

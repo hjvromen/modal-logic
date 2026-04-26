@@ -2,6 +2,12 @@ import ModalLogic.Semantics.Soundness
 import ModalLogic.Syntax.SyntaxLemmas
 import Mathlib.Order.Zorn
 
+/-
+Copyright (c) 2026 Huub Vromen. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Huub Vromen
+-/
+
 /-!
 # Consistency, Maximal Consistent Sets, and Lindenbaum's Lemma
 
@@ -59,7 +65,7 @@ A set of axioms AX is **semantically consistent** if it does not globally entail
 In other words, there exists a model where all axioms in AX are true at some world.
 This is the semantic counterpart to syntactic consistency (not proving ⊥).
 -/
-def sem_cons (AX : Ctx) : Prop := ¬ (globalSemCsq AX Form.bot)
+def sem_cons (AX : Ctx) : Prop := ¬ (globalSemCsq.{0} AX Form.bot)
 
 /--
 **Semantic Consistency of K**: The minimal modal logic K is semantically consistent.
@@ -227,7 +233,7 @@ lemma sem_consKTB : sem_cons KTBAxioms := by
   use v
   constructor
   · intro φ x h1
-    simp only [KTBAxioms, Set.mem_union, Set.mem_setOf_eq] at h1
+    simp only [KTBAxioms, Set.mem_union ] at h1
     cases h1 with
     | inl h1 =>
       obtain ⟨ψ, h1⟩ := h1
@@ -256,7 +262,7 @@ lemma sem_consKB4 : sem_cons KB4Axioms := by
   use v
   constructor
   · intro φ x h1
-    simp only [KB4Axioms, Set.mem_union, Set.mem_setOf_eq] at h1
+    simp only [KB4Axioms, Set.mem_union ] at h1
     cases h1 with
     | inl h1 =>
       obtain ⟨ψ, h1⟩ := h1
@@ -333,7 +339,7 @@ lemma sem_consKD5 : sem_cons KD5Axioms := by
   use v
   constructor
   · intro φ x h1
-    simp only [KD5Axioms, Set.mem_union, Set.mem_setOf_eq] at h1
+    simp only [KD5Axioms, Set.mem_union ] at h1
     cases h1 with
     | inl h1 =>
       obtain ⟨ψ, h1⟩ := h1

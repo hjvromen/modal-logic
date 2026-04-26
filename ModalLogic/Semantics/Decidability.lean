@@ -1,6 +1,7 @@
 /-
-Copyright (c) 2025 Huub Vromen. All rights reserved.
-Author: Huub Vromen
+Copyright (c) 2026 Huub Vromen. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Huub Vromen
 
 # Decidability of K
 
@@ -35,7 +36,6 @@ Combining these steps, K-validity reduces to a finite search problem.
 - Blackburn, de Rijke, Venema, *Modal Logic*, §2.3, §6.1
 -/
 
-import Mathlib
 import ModalLogic.Semantics.FiniteModelProperty
 
 namespace Modal
@@ -153,7 +153,7 @@ lemma finite_model_to_fin {F : Frame} [inst : Fintype F.states]
       -- Use Fintype.equivFin to get e : F.states ≃ Fin (Fintype.card F.states).
       obtain ⟨e, he⟩ : ∃ e : F.states ≃ Fin (Fintype.card F.states), True := by
         exact ⟨ Fintype.equivFin _, trivial ⟩
-      generalize_proofs at *; simp_all +decide [ Fintype.card_fin ] ; (
+      generalize_proofs at *; simp_all +decide  ; (
       -- Define rel' on Fin n by rel' i j = F.rel (e.symm i) (e.symm j), and v' k i = v k (e.symm i).
       set rel' : Fin (Fintype.card F.states) → Fin (Fintype.card F.states) → Prop := fun i j => F.rel (e.symm i) (e.symm j)
       set v' : Nat → Fin (Fintype.card F.states) → Prop := fun k i => v k (e.symm i);
@@ -162,7 +162,7 @@ lemma finite_model_to_fin {F : Frame} [inst : Fintype F.states]
         apply forces_equiv e rel' (by
         aesop) v' (by
         aesop)
-      generalize_proofs at *; simp_all +decide [ forces ] ; -- Use the equivalence to transfer the satisfiability.;
+      generalize_proofs at *; simp_all +decide ; -- Use the equivalence to transfer the satisfiability.;
       exact ⟨ rel', v', e w, h ⟩)
 
 /-- Finite satisfiability is equivalent to satisfiability on `Fin n` for some n. -/
@@ -216,7 +216,7 @@ theorem satisfiable_implies_bounded (φ : Form) :
             rwa [ Finset.card_image_of_injective _ h_inj, Finset.card_univ ] at h_card;
           exact h_card;
         refine le_trans h_card <| le_trans ( Finset.card_le_card <| Finset.image_subset_iff.mpr fun x hx => Finset.mem_univ _ ) ?_ ; simp +decide [ Finset.card_univ ] ; ring_nf ;
-        exact pow_le_pow_right₀ ( by decide ) ( List.toFinset_card_le _ ) |> le_trans <| by simp +decide [ List.toFinset_card_le ] ;
+        exact pow_le_pow_right₀ ( by decide ) ( List.toFinset_card_le _ ) |> le_trans <| by simp +decide  ;
       have h_forces : forces F'' v'' w'' φ := by
         convert filtration_lemma F' v' φ w' φ _ |>.1 h₁ using 1;
         exact mem_subformulas_self φ

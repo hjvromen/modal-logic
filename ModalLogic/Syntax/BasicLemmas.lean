@@ -1,6 +1,7 @@
 /-
-Copyright (c) 2025 Huub Vromen.
-Improved and modularized version.
+Copyright (c) 2026 Huub Vromen. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Huub Vromen
 
 # Basic Structural Lemmas
 
